@@ -5,6 +5,6 @@ import io.ktor.client.HttpClientConfig
 
 const val BASE_URL_FRONTEND = "http://localhost:8081/"
 
-const val BASE_URL_LOCAL_BACKEND = "http://localhost:8080/"
+const val BASE_URL_LOCAL_BACKEND = "localhost:8080/"
 
 expect fun httpClient(config: HttpClientConfig<*>.() -> Unit = {}): HttpClient

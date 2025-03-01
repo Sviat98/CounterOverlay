@@ -14,6 +14,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.http.ContentType
+import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
@@ -44,7 +45,10 @@ val coreModule = module {
     single {
         httpClient {
             defaultRequest {
-                url(BASE_URL_LOCAL_BACKEND)
+                url{
+                    protocol = URLProtocol.HTTP
+                    host = BASE_URL_LOCAL_BACKEND
+                }
                 contentType(ContentType.Application.Json)
             }
             install(Logging){

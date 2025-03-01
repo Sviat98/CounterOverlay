@@ -9,4 +9,6 @@ interface CounterRepository {
     suspend fun closeSession()
     fun connectToCounterUpdates(counterId: String)
     fun observeCounterUpdates(): Flow<LoadResult<Counter, Throwable>>
+    suspend fun updateCounterValue(counterId: String, delta: Int)
+    suspend fun addCounter(counterName: String): LoadResult<Counter, Throwable>
 }

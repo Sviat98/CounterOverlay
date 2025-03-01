@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 
@@ -25,6 +26,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddCounterDialogScreen(
     modifier: Modifier = Modifier,
     viewModel: AddCounterDialogViewModel = koinViewModel(),
+    onDismissRequest:()->Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -33,9 +35,25 @@ fun AddCounterDialogScreen(
         }
     }
 
-    val counterName = rememberTextFieldState()
 
     val buttonBackgroundColor = MaterialTheme.colors.primary
+
+    AddCounterDialogContent(
+        state = state,
+        onEvent = {viewModel.onEvent(it)},
+        onDismissRequest = onDismissRequest
+    )
+}
+
+@Composable
+fun AddCounterDialogContent(
+    modifier: Modifier = Modifier,
+    state: AddCounterDialogState,
+    onEvent: (AddCounterDialogUiEvent)->Unit,
+    onDismissRequest: () -> Unit= {},
+) {
+
+    val counterName = rememberTextFieldState()
 
     Column(
         modifier = Modifier.then(modifier).background(MaterialTheme.colors.background)
@@ -46,9 +64,11 @@ fun AddCounterDialogScreen(
         BasicTextField(
             state = counterName
         )
-        InteractiveButton(
-            onClick = {},
-            onMouseHoveredButtonColor = Color.DarkGray,
+        Button(
+            onClick = {
+                onEvent(AddCounterDialogUiEvent.AddCounter(counterName.text.toString()))
+                onDismissRequest()
+            },
         ) {
             Text("Add")
         }

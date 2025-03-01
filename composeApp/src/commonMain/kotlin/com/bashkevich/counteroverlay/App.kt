@@ -60,7 +60,9 @@ fun App(navController: NavHostController = rememberNavController()) {
                 ) {
                     val addCounterDialogViewModel = koinViewModel<AddCounterDialogViewModel>()
 
-                    AddCounterDialogScreen(viewModel = addCounterDialogViewModel)
+                    AddCounterDialogScreen(
+                        viewModel = addCounterDialogViewModel,
+                        onDismissRequest = { navController.navigateUp() })
                 }
                 platformSpecificRoutes()
             }
