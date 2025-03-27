@@ -1,6 +1,7 @@
 package com.bashkevich.counteroverlay.counter.remote
 
 import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
+import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.ResponseMessage
 import com.bashkevich.counteroverlay.core.runOperationCatching
@@ -92,7 +93,7 @@ class CounterRemoteDataSource(
                         httpClient.webSocketSession {
                             url {
                                 protocol = URLProtocol.WSS
-                                host = BASE_URL_LOCAL_BACKEND
+                                host = BASE_URL_REMOTE_BACKEND
                                 port = 443
                                 path("/counters/$counterId")
                             }
