@@ -92,12 +92,12 @@ fun CounterDetailsContent(
         }
 
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.tennisscorekeeper.navigation.CounterDetailsRoute/${counter.id}"))
+            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.counteroverlay.navigation.CounterDetailsRoute/${counter.id}"))
         }) {
             Text("Copy Control Panel URL")
         }
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.tennisscorekeeper.navigation.CounterOverlayRoute?counterId=${counter.id}"))
+            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.counteroverlay.navigation.CounterOverlayRoute?counterId=${counter.id}"))
         }) {
             Text("Copy Overlay URL")
         }
