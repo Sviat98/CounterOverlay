@@ -1,6 +1,7 @@
 package com.bashkevich.counteroverlay.screens.addcounterdialog
 
 import androidx.lifecycle.viewModelScope
+import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,14 +29,10 @@ class AddCounterDialogViewModel(
         get() = super.action
 
     fun onEvent(uiEvent: AddCounterDialogUiEvent) {
-        when(uiEvent){
-            is AddCounterDialogUiEvent.AddCounter->{
-                viewModelScope.launch {
-                    val counterResult = async {
-                        counterRepository.addCounter(uiEvent.counterName)
-                    }
-                    counterResult.await()
-                }
+        when (uiEvent) {
+            is AddCounterDialogUiEvent.AddCounter -> {
+                val addCounterBody = AddCounterBody(uiEvent.counterName)
+                counterRepository.emitNewCounter(addCounterBody)
             }
         }
     }

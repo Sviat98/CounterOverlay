@@ -1,6 +1,7 @@
 package com.bashkevich.counteroverlay.di
 
 import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
+import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.httpClient
 import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
@@ -46,8 +47,10 @@ val coreModule = module {
         httpClient {
             defaultRequest {
                 url{
-                    protocol = URLProtocol.HTTP
-                    host = BASE_URL_LOCAL_BACKEND
+//                    protocol = URLProtocol.HTTP
+//                    host = BASE_URL_LOCAL_BACKEND
+                    protocol = URLProtocol.HTTPS
+                    host = BASE_URL_REMOTE_BACKEND
                 }
                 contentType(ContentType.Application.Json)
             }

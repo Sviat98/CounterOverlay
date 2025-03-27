@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +27,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AddCounterDialogScreen(
     modifier: Modifier = Modifier,
     viewModel: AddCounterDialogViewModel = koinViewModel(),
-    onDismissRequest:()->Unit
+    onDismissRequest: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -40,7 +41,7 @@ fun AddCounterDialogScreen(
 
     AddCounterDialogContent(
         state = state,
-        onEvent = {viewModel.onEvent(it)},
+        onEvent = { viewModel.onEvent(it) },
         onDismissRequest = onDismissRequest
     )
 }
@@ -49,19 +50,19 @@ fun AddCounterDialogScreen(
 fun AddCounterDialogContent(
     modifier: Modifier = Modifier,
     state: AddCounterDialogState,
-    onEvent: (AddCounterDialogUiEvent)->Unit,
-    onDismissRequest: () -> Unit= {},
+    onEvent: (AddCounterDialogUiEvent) -> Unit,
+    onDismissRequest: () -> Unit = {},
 ) {
-
-    val counterName = rememberTextFieldState()
-
     Column(
         modifier = Modifier.then(modifier).background(MaterialTheme.colors.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BasicTextField(
+        Text("Add")
+        val counterName = state.counterName
+
+        TextField(
             state = counterName
         )
         Button(
