@@ -7,7 +7,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.bashkevich.counteroverlay.di.coreModule
 import com.bashkevich.counteroverlay.di.counterModule
 import com.bashkevich.counteroverlay.di.platformModule
@@ -24,8 +23,10 @@ import com.bashkevich.counteroverlay.screens.counterlist.CounterListViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinMultiplatformApplication
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.KoinConfiguration
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 @Preview
 fun App(navController: NavHostController = rememberNavController()) {

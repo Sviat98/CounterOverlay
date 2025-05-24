@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.ArrowBack
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -53,6 +53,8 @@ fun CounterDetailsContent(
     state: CounterDetailsState,
     onEvent: (CounterDetailsUiEvent) -> Unit,
 ) {
+    val clipboard = LocalClipboard.current.nativeClipboard
+
     val clipboardManager = LocalClipboardManager.current
     Column(
         modifier = Modifier.then(modifier).fillMaxSize(),
@@ -92,12 +94,12 @@ fun CounterDetailsContent(
         }
 
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.counteroverlay.navigation.CounterDetailsRoute/${counter.id}"))
+            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#counters/${counter.id}"))
         }) {
             Text("Copy Control Panel URL")
         }
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#com.bashkevich.counteroverlay.navigation.CounterOverlayRoute?counterId=${counter.id}"))
+            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#counterOverlay?counterId=${counter.id}"))
         }) {
             Text("Copy Overlay URL")
         }

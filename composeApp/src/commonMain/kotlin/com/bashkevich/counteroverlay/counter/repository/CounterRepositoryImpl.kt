@@ -26,6 +26,8 @@ class CounterRepositoryImpl(
     }
 
     override suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Counter, Throwable> {
+        println("counterRepository addCounter CALL ${addCounterBody.hashCode()}")
+
         return counterRemoteDataSource.addCounter(addCounterBody).mapSuccess { counterDto ->
             counterDto.toDomain()
         }
@@ -50,6 +52,7 @@ class CounterRepositoryImpl(
             .map { result -> result.mapSuccess { counterDto -> counterDto.toDomain() } }
 
     override fun emitNewCounter(addCounterBody: AddCounterBody) {
+        print("Emit counter ${addCounterBody.hashCode()}")
         _newCounter.tryEmit(addCounterBody)
     }
 

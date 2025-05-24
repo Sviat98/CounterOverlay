@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -53,7 +54,10 @@ fun CounterCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp,Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(counter.name)
+            Column {
+                Text(counter.name)
+                Text("Id: ${counter.id}")
+            }
             CounterView(counter = counter)
         }
     }

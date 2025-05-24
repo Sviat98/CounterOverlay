@@ -1,16 +1,13 @@
 package com.bashkevich.counteroverlay.counter.remote
 
-import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.ResponseMessage
 import com.bashkevich.counteroverlay.core.runOperationCatching
 import com.bashkevich.counteroverlay.core.webSocketDispatcher
-import com.bashkevich.counteroverlay.counter.remote.CounterDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
-import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.get
 import io.ktor.client.request.patch
@@ -57,6 +54,7 @@ class CounterRemoteDataSource(
         counterBody: AddCounterBody,
     ): LoadResult<CounterDto, Throwable> {
         return runOperationCatching {
+            println("counterRemoteDataSource addCounter CALL ${counterBody.hashCode()}")
             val counterDto = httpClient.post("/counters") {
                 setBody(counterBody)
             }.body<CounterDto>()

@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.mvi.BaseViewModel
-import com.bashkevich.counteroverlay.screens.counterlist.CounterListAction
-import com.bashkevich.counteroverlay.screens.counterlist.CounterListState
-import com.bashkevich.counteroverlay.screens.counterlist.CounterListUiEvent
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class CounterListViewModel(
@@ -40,7 +38,11 @@ class CounterListViewModel(
 
 
         viewModelScope.launch {
-            counterRepository.observeNewCounter().collect{ addCounterBody->
+            counterRepository.observeNewCounter().distinctUntilChanged{old, new ->
+                old === new
+            }.collect{ addCounterBody->
+                print("Collect counter ${addCounterBody.hashCode()}")
+
                 val loadResult = counterRepository.addCounter(addCounterBody)
 
                 if (loadResult is LoadResult.Success){
