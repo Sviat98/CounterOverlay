@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 data object CounterListRoute
 
 @Serializable
-@SerialName("counters/add")
+@SerialName("addCounter")
 data object AddCounterDialogRoute
 
 @Serializable

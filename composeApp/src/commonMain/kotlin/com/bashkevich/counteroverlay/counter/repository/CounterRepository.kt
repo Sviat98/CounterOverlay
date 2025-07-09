@@ -15,4 +15,5 @@ interface CounterRepository {
     suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Counter, Throwable>
     fun emitNewCounter(addCounterBody: AddCounterBody)
     fun observeNewCounter(): SharedFlow<AddCounterBody>
+    suspend fun getCountersLocal(): LoadResult<List<Counter>, Throwable>
 }

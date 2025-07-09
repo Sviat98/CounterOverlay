@@ -13,9 +13,6 @@ import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.mvi.BaseViewModel
 import com.bashkevich.counteroverlay.navigation.CounterDetailsRoute
-import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsAction
-import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsState
-import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsUiEvent
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -34,6 +31,7 @@ class CounterDetailsViewModel(
 
     init {
         val counterId = savedStateHandle.toRoute<CounterDetailsRoute>().id
+
 
         counterRepository.connectToCounterUpdates(counterId = counterId)
 

@@ -2,6 +2,7 @@ package com.bashkevich.counteroverlay.counter.repository
 
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.mapSuccess
+import com.bashkevich.counteroverlay.counter.COUNTERS
 import com.bashkevich.counteroverlay.counter.Counter
 import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
 import com.bashkevich.counteroverlay.counter.remote.CounterDeltaDto
@@ -23,6 +24,10 @@ class CounterRepositoryImpl(
             val counters = counterDtos.map { it.toDomain() }
             counters
         }
+    }
+
+    override suspend fun getCountersLocal(): LoadResult<List<Counter>, Throwable> {
+        return LoadResult.Success(COUNTERS)
     }
 
     override suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Counter, Throwable> {

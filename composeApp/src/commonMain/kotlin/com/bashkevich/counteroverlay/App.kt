@@ -30,10 +30,12 @@ import org.koin.dsl.KoinConfiguration
 @Composable
 @Preview
 fun App(navController: NavHostController = rememberNavController()) {
-    KoinMultiplatformApplication(config = KoinConfiguration { modules(
-        coreModule,
-        counterModule, platformModule
-    ) }) {
+    KoinMultiplatformApplication(config = KoinConfiguration {
+        modules(
+            coreModule,
+            counterModule, platformModule
+        )
+    }) {
         MaterialTheme {
             NavHost(navController = navController, startDestination = CounterListRoute) {
                 composable<CounterListRoute> {
@@ -55,7 +57,9 @@ fun App(navController: NavHostController = rememberNavController()) {
                 composable<CounterDetailsRoute> {
                     val counterDetailsViewModel = koinViewModel<CounterDetailsViewModel>()
 
-                    CounterDetailsScreen(viewModel = counterDetailsViewModel)
+                    CounterDetailsScreen(
+                        viewModel = counterDetailsViewModel
+                    )
                 }
                 dialog<AddCounterDialogRoute>(
                 ) {

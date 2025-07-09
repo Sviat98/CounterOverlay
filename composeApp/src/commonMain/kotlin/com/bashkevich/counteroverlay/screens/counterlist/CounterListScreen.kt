@@ -78,7 +78,6 @@ fun CounterListContent(
                         onClick = { onItemClick(counter) }
                     )
                 }
-
             }
         }
     }
