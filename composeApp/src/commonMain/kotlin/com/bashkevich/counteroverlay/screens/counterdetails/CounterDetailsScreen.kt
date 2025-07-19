@@ -16,16 +16,17 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bashkevich.counteroverlay.components.CounterView
+import com.bashkevich.counteroverlay.components.setText
 import com.bashkevich.counteroverlay.core.BASE_URL_FRONTEND
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -53,9 +54,8 @@ fun CounterDetailsContent(
     state: CounterDetailsState,
     onEvent: (CounterDetailsUiEvent) -> Unit,
 ) {
-    val clipboard = LocalClipboard.current.nativeClipboard
+    val clipboard = LocalClipboard.current
 
-    val clipboardManager = LocalClipboardManager.current
     Column(
         modifier = Modifier.then(modifier).fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -93,13 +93,18 @@ fun CounterDetailsContent(
             }
         }
 
+        val scope = rememberCoroutineScope()
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#counters/${counter.id}"))
+            scope.launch {
+                clipboard.setText("$BASE_URL_FRONTEND#counters/${counter.id}")
+            }
         }) {
             Text("Copy Control Panel URL")
         }
         Button(onClick = {
-            clipboardManager.setText(AnnotatedString("$BASE_URL_FRONTEND#counterOverlay?counterId=${counter.id}"))
+            scope.launch {
+                clipboard.setText("$BASE_URL_FRONTEND#counterOverlay?counterId=${counter.id}")
+            }
         }) {
             Text("Copy Overlay URL")
         }
