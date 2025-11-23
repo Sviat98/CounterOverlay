@@ -1,6 +1,7 @@
 package com.bashkevich.counteroverlay.screens.addcounterdialog
 
 import androidx.lifecycle.viewModelScope
+import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,10 +11,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.mvi.BaseViewModel
-import com.bashkevich.counteroverlay.screens.addcounterdialog.AddCounterDialogAction
-import com.bashkevich.counteroverlay.screens.addcounterdialog.AddCounterDialogState
-import com.bashkevich.counteroverlay.screens.addcounterdialog.AddCounterDialogUiEvent
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class AddCounterDialogViewModel(
@@ -30,9 +27,28 @@ class AddCounterDialogViewModel(
 
     fun onEvent(uiEvent: AddCounterDialogUiEvent) {
         when (uiEvent) {
-            is AddCounterDialogUiEvent.AddCounter -> {
-                val addCounterBody = AddCounterBody(uiEvent.counterName)
-                counterRepository.emitNewCounter(addCounterBody)
+            is AddCounterDialogUiEvent.AddCounter -> addCounter(uiEvent.counterName)
+        }
+    }
+
+    private fun addCounter(counterName: String){
+        viewModelScope.launch {
+            reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Loading) }
+            val addCounterBody = AddCounterBody(counterName)
+            val addCounterResult = counterRepository.addCounter(addCounterBody)
+
+            when(addCounterResult){
+                is LoadResult.Success ->{
+                    val newCounter = addCounterResult.result
+
+                    counterRepository.emitNewCounter(newCounter)
+
+                    reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Success) }
+                }
+                is LoadResult.Error ->{
+                    val message = addCounterResult.result.message ?: ""
+                    reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Error(message = message)) }
+                }
             }
         }
     }

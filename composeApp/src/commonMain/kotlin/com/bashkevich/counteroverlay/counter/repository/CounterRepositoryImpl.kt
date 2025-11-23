@@ -17,7 +17,7 @@ class CounterRepositoryImpl(
 ) : CounterRepository {
 
 
-    private val _newCounter = MutableSharedFlow<AddCounterBody>(replay = 1)
+    private val _newCounter = MutableSharedFlow<Counter>(replay = 1)
 
     override suspend fun getCounters(): LoadResult<List<Counter>, Throwable> {
         return counterRemoteDataSource.getCounters().mapSuccess { counterDtos ->
@@ -56,9 +56,9 @@ class CounterRepositoryImpl(
         counterRemoteDataSource.observeCounterUpdates()
             .map { result -> result.mapSuccess { counterDto -> counterDto.toDomain() } }
 
-    override fun emitNewCounter(addCounterBody: AddCounterBody) {
-        print("Emit counter ${addCounterBody.hashCode()}")
-        _newCounter.tryEmit(addCounterBody)
+    override fun emitNewCounter(newCounter: Counter) {
+        print("Emit counter ${newCounter.hashCode()}")
+        _newCounter.tryEmit(newCounter)
     }
 
     override fun observeNewCounter() = _newCounter.asSharedFlow()

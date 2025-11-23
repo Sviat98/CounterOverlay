@@ -31,35 +31,27 @@ class CounterListViewModel(
 
             println(loadResult)
 
-            if (loadResult is LoadResult.Success){
+            if (loadResult is LoadResult.Success) {
                 onEvent(CounterListUiEvent.ShowCounters(counters = loadResult.result))
             }
         }
 
 
         viewModelScope.launch {
-            counterRepository.observeNewCounter().distinctUntilChanged{old, new ->
-                old === new
-            }.collect{ addCounterBody->
-                print("Collect counter ${addCounterBody.hashCode()}")
+            counterRepository.observeNewCounter().distinctUntilChanged().collect { newCounter ->
 
-                val loadResult = counterRepository.addCounter(addCounterBody)
+                val counters = state.value.counters.toMutableList()
 
-                if (loadResult is LoadResult.Success){
-                    val newCounter = loadResult.result
-                    val counters = state.value.counters.toMutableList()
-
-                    counters.add(newCounter)
-                    onEvent(CounterListUiEvent.ShowCounters(counters = counters.toList()))
-                }
+                counters.add(newCounter)
+                onEvent(CounterListUiEvent.ShowCounters(counters = counters.toList()))
             }
         }
     }
 
     fun onEvent(uiEvent: CounterListUiEvent) {
-        when(uiEvent){
+        when (uiEvent) {
             is CounterListUiEvent.ShowCounters -> {
-                reduceState { oldState-> oldState.copy(counters = uiEvent.counters) }
+                reduceState { oldState -> oldState.copy(counters = uiEvent.counters) }
             }
         }
     }
