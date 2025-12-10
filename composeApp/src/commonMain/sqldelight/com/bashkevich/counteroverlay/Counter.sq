@@ -1,0 +1,22 @@
+import kotlin.Boolean;
+
+CREATE TABLE CounterEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    value INTEGER NOT NULL
+);
+
+insertCounter:
+INSERT OR REPLACE INTO CounterEntity(id, name, value)
+VALUES (?, ?, ?);
+
+getAllCounters:
+SELECT *
+FROM CounterEntity;
+
+deleteCounterById:
+DELETE FROM CounterEntity
+WHERE id = ?;
+
+deleteAllCounters:
+DELETE FROM CounterEntity;

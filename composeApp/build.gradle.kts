@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -34,6 +35,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqlDelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +63,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.websockets)
 
+            implementation(libs.sqlDelight.coroutines.extensions)
         }
 
         val desktopMain by getting
@@ -69,12 +72,23 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqlDelight.sqlite.driver)
         }
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(libs.sqlDelight.web.worker.driver)
         }
     }
+}
+
+sqldelight {
+  databases {
+    create("Database") {
+      packageName.set("com.bashkevich.counteroverlay")
+      generateAsync.set(true)
+    }
+  }
 }
 
 android {
