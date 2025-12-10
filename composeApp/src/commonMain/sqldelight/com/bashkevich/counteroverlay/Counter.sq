@@ -3,11 +3,11 @@ import kotlin.Boolean;
 CREATE TABLE CounterEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
-    value INTEGER NOT NULL
+    amount INTEGER NOT NULL
 );
 
 insertCounter:
-INSERT OR REPLACE INTO CounterEntity(id, name, value)
+INSERT OR REPLACE INTO CounterEntity(id, name, amount)
 VALUES (?, ?, ?);
 
 getAllCounters:

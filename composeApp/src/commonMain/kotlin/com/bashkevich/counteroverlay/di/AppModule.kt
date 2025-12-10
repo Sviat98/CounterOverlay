@@ -6,6 +6,7 @@ import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.DriverFactory
 import com.bashkevich.counteroverlay.core.PlatformConfiguration
 import com.bashkevich.counteroverlay.core.httpClient
+import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
 import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import com.bashkevich.counteroverlay.counter.repository.CounterRepositoryImpl
@@ -38,6 +39,7 @@ val counterModule = module {
         bind<CounterRepository>()
     }
     singleOf(::CounterRemoteDataSource)
+    singleOf(::CounterLocalDataSource)
 }
 
 val coreModule = module {

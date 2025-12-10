@@ -3,4 +3,4 @@ package com.bashkevich.counteroverlay.core
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-internal actual val webSocketDispatcher: CoroutineDispatcher = Dispatchers.Default
+internal actual val backgroundDispatcher: CoroutineDispatcher = Dispatchers.Default
