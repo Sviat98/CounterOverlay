@@ -84,7 +84,7 @@ kotlin {
 
 sqldelight {
   databases {
-    create("Database") {
+    create("CounterDatabase") {
       packageName.set("com.bashkevich.counteroverlay")
       generateAsync.set(true)
     }

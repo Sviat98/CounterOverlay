@@ -1,7 +1,10 @@
 package com.bashkevich.counteroverlay.di
 
+import com.bashkevich.counteroverlay.CounterDatabase
 import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
+import com.bashkevich.counteroverlay.core.DriverFactory
+import com.bashkevich.counteroverlay.core.PlatformConfiguration
 import com.bashkevich.counteroverlay.core.httpClient
 import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
@@ -65,6 +68,12 @@ val coreModule = module {
                 contentConverter = KotlinxWebsocketSerializationConverter(Json)
             }
         }
+    }
+
+    single {
+        val platformConfiguration  = get<PlatformConfiguration>()
+        val driver = DriverFactory(platformConfiguration).createDriver()
+        CounterDatabase(driver)
     }
 }
 
