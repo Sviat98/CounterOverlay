@@ -12,8 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 import com.bashkevich.counteroverlay.components.CounterView
 import com.bashkevich.counteroverlay.components.setText
 import com.bashkevich.counteroverlay.core.BASE_URL_FRONTEND
@@ -58,10 +54,6 @@ fun CounterDetailsContent(
     onEvent: (CounterDetailsUiEvent) -> Unit,
 ) {
     val clipboard = LocalClipboard.current
-
-    val windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-
-    windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.MEDIUM
 
     Column(
         modifier = Modifier.then(modifier).fillMaxSize(),

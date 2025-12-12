@@ -28,6 +28,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
+                configDirectory = file("src/webpack.config.d")
             }
         }
         binaries.executable()
@@ -81,10 +82,10 @@ kotlin {
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(libs.sqlDelight.web.worker.driver)
-            implementation(npm("@cashapp/sqldelight-sqljs-worker", "2.1.0"))
-            implementation(devNpm("sql.js", libs.versions.sqlJs.get()))
-//            implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
+            implementation(libs.sqlDelight.web.worker.driver.wasm)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
+            implementation(npm("sql.js", libs.versions.sqlJs.get()))
+            implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
         }
     }
 }

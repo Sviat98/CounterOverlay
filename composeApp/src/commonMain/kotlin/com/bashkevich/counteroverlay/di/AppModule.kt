@@ -1,9 +1,7 @@
 package com.bashkevich.counteroverlay.di
 
 import app.cash.sqldelight.async.coroutines.awaitCreate
-import app.cash.sqldelight.db.SqlDriver
 import com.bashkevich.counteroverlay.CounterDatabase
-import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.DriverFactory
 import com.bashkevich.counteroverlay.core.PlatformConfiguration
@@ -27,9 +25,7 @@ import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json

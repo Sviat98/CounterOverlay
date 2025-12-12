@@ -1,7 +1,6 @@
 package com.bashkevich.counteroverlay.screens.counterlist
 
 import androidx.lifecycle.viewModelScope
-import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
