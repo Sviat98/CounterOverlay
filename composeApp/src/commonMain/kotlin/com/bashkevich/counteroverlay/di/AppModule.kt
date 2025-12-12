@@ -1,8 +1,12 @@
 package com.bashkevich.counteroverlay.di
 
-import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
+import app.cash.sqldelight.async.coroutines.awaitCreate
+import com.bashkevich.counteroverlay.CounterDatabase
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
+import com.bashkevich.counteroverlay.core.DriverFactory
+import com.bashkevich.counteroverlay.core.PlatformConfiguration
 import com.bashkevich.counteroverlay.core.httpClient
+import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
 import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import com.bashkevich.counteroverlay.counter.repository.CounterRepositoryImpl
@@ -19,6 +23,11 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -35,6 +44,7 @@ val counterModule = module {
         bind<CounterRepository>()
     }
     singleOf(::CounterRemoteDataSource)
+    singleOf(::CounterLocalDataSource)
 }
 
 val coreModule = module {
@@ -46,7 +56,7 @@ val coreModule = module {
     single {
         httpClient {
             defaultRequest {
-                url{
+                url {
 //                    protocol = URLProtocol.HTTP
 //                    host = BASE_URL_LOCAL_BACKEND
                     protocol = URLProtocol.HTTPS
@@ -54,7 +64,7 @@ val coreModule = module {
                 }
                 contentType(ContentType.Application.Json)
             }
-            install(Logging){
+            install(Logging) {
                 level = LogLevel.ALL
             }
             install(ContentNegotiation) {
@@ -65,6 +75,22 @@ val coreModule = module {
                 contentConverter = KotlinxWebsocketSerializationConverter(Json)
             }
         }
+    }
+
+    single {
+        val platformConfiguration = get<PlatformConfiguration>()
+
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+        val driver = DriverFactory(platformConfiguration).createDriver().also {
+            scope.launch {
+                CounterDatabase.Schema.awaitCreate(it)
+            }.invokeOnCompletion {
+                // После завершения корутины отменяем scope
+                scope.cancel()
+            }
+        }
+        CounterDatabase(driver)
     }
 }
 

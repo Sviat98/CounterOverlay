@@ -1,5 +1,6 @@
 package com.bashkevich.counteroverlay.counter
 
+import com.bashkevich.counteroverlay.CounterEntity
 import com.bashkevich.counteroverlay.counter.remote.CounterDto
 
 data class Counter(
@@ -16,3 +17,9 @@ val COUNTERS = listOf(
 )
 
 fun CounterDto.toDomain() = Counter(id, name, value)
+
+fun CounterEntity.toDomain() = Counter(
+    id = id,
+    name = name,
+    value = amount.toInt()
+)

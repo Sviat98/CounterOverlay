@@ -1,5 +1,6 @@
 package com.bashkevich.counteroverlay.counter.remote
 
+import com.bashkevich.counteroverlay.CounterEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -26,3 +27,8 @@ data class CounterDeltaDto(
     val delta: Int,
 )
 
+fun CounterDto.toEntity() = CounterEntity(
+    id = id,
+    name = name,
+    amount = value.toLong()
+)

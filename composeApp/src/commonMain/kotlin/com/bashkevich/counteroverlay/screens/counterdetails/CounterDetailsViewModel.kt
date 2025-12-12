@@ -3,7 +3,6 @@ package com.bashkevich.counteroverlay.screens.counterdetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,30 +35,24 @@ class CounterDetailsViewModel(
         counterRepository.connectToCounterUpdates(counterId = counterId)
 
         viewModelScope.launch {
-            counterRepository.observeCounterUpdates().distinctUntilChanged().collect {result->
-                println(result)
-                when(result){
-                    is LoadResult.Success->{
-                        onEvent(CounterDetailsUiEvent.ShowCounter(result.result))
-                    }
-                    is LoadResult.Error->{
-                        println(result.result.message)
-                    }
+            counterRepository.observeCounterById(counterId).distinctUntilChanged()
+                .collect { counter ->
+                    onEvent(CounterDetailsUiEvent.ShowCounter(counter))
                 }
-            }
         }
     }
 
     fun onEvent(uiEvent: CounterDetailsUiEvent) {
-        when(uiEvent){
-            is CounterDetailsUiEvent.ShowCounter->{
-                reduceState { oldState->
+        when (uiEvent) {
+            is CounterDetailsUiEvent.ShowCounter -> {
+                reduceState { oldState ->
                     oldState.copy(counter = uiEvent.counter)
                 }
             }
+
             is CounterDetailsUiEvent.ChangeCounterValue -> {
                 viewModelScope.launch {
-                    counterRepository.updateCounterValue(uiEvent.counterId,uiEvent.delta)
+                    counterRepository.updateCounterValue(uiEvent.counterId, uiEvent.delta)
                 }
             }
         }

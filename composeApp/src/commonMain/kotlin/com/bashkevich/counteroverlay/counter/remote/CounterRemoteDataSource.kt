@@ -4,7 +4,7 @@ import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.ResponseMessage
 import com.bashkevich.counteroverlay.core.runOperationCatching
-import com.bashkevich.counteroverlay.core.webSocketDispatcher
+import com.bashkevich.counteroverlay.core.backgroundDispatcher
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
@@ -34,7 +34,7 @@ class CounterRemoteDataSource(
     private val httpClient: HttpClient
 ) {
     private var webSocketSession: DefaultClientWebSocketSession? = null
-    private val scope = CoroutineScope(SupervisorJob() + webSocketDispatcher)
+    private val scope = CoroutineScope(SupervisorJob() + backgroundDispatcher)
 
 
     private val _counterFlow = MutableSharedFlow<LoadResult<CounterDto, Throwable>>(

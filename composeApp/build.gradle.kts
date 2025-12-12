@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -24,7 +25,12 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+                configDirectory = file("src/webpack.config.d")
+            }
+        }
         binaries.executable()
     }
     
@@ -34,6 +40,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqlDelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +68,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.websockets)
 
+            implementation(libs.sqlDelight.coroutines.extensions)
         }
 
         val desktopMain by getting
@@ -69,12 +77,26 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.sqlDelight.sqlite.driver)
         }
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
+            implementation(libs.sqlDelight.web.worker.driver.wasm)
+            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
+            implementation(npm("sql.js", libs.versions.sqlJs.get()))
+            implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
         }
     }
+}
+
+sqldelight {
+  databases {
+    create("CounterDatabase") {
+      packageName.set("com.bashkevich.counteroverlay")
+      generateAsync.set(true)
+    }
+  }
 }
 
 android {
