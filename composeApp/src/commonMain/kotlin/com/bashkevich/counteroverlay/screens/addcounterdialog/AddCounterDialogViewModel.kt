@@ -31,23 +31,20 @@ class AddCounterDialogViewModel(
         }
     }
 
-    private fun addCounter(counterName: String){
+    private fun addCounter(counterName: String) {
         viewModelScope.launch {
             reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Loading) }
             val addCounterBody = AddCounterBody(counterName)
             val addCounterResult = counterRepository.addCounter(addCounterBody)
 
-            when(addCounterResult){
-                is LoadResult.Success ->{
-                    val newCounter = addCounterResult.result
-
-                    counterRepository.emitNewCounter(newCounter)
-
-                    reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Success) }
-                }
-                is LoadResult.Error ->{
-                    val message = addCounterResult.result.message ?: ""
-                    reduceState { oldState -> oldState.copy(addCounterState = AddCounterState.Error(message = message)) }
+            if (addCounterResult is LoadResult.Error) {
+                val message = addCounterResult.result.message ?: ""
+                reduceState { oldState ->
+                    oldState.copy(
+                        addCounterState = AddCounterState.Error(
+                            message = message
+                        )
+                    )
                 }
             }
         }

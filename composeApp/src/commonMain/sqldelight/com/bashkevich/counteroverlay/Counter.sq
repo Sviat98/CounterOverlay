@@ -1,6 +1,6 @@
 import kotlin.Boolean;
 
-CREATE TABLE CounterEntity (
+CREATE TABLE IF NOT EXISTS CounterEntity (
     id TEXT NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     amount INTEGER NOT NULL
@@ -14,9 +14,19 @@ getAllCounters:
 SELECT *
 FROM CounterEntity;
 
+getCounterById:
+SELECT *
+FROM CounterEntity
+WHERE id = ?;
+
 deleteCounterById:
 DELETE FROM CounterEntity
 WHERE id = ?;
 
 deleteAllCounters:
 DELETE FROM CounterEntity;
+
+updateCounterValue:
+UPDATE CounterEntity
+SET amount = :amount
+WHERE id = :id;

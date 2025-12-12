@@ -23,6 +23,8 @@ ktor = "3.3.2"
 kotlinx-coroutines = "1.10.2"
 material3-adaptive = "1.2.0"
 sqlDelight = "2.2.1"
+sqlJs = "1.8.0"
+webPackPlugin = "9.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

@@ -2,6 +2,7 @@ package com.bashkevich.counteroverlay.counter.local
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.cash.sqldelight.coroutines.mapToOne
 import com.bashkevich.counteroverlay.CounterDatabase
 import com.bashkevich.counteroverlay.CounterEntity
 import com.bashkevich.counteroverlay.core.backgroundDispatcher
@@ -18,8 +19,17 @@ class CounterLocalDataSource(
             .mapToList(backgroundDispatcher)
     }
 
+    fun getCounterById(id: String): Flow<CounterEntity> {
+        return queries.getCounterById(id)
+            .asFlow()
+            .mapToOne(backgroundDispatcher)
+    }
+
     suspend fun insertCounter(counter: CounterEntity) {
         queries.insertCounter(counter.id, counter.name, counter.amount)
+    }
+    suspend fun updateCounterValue(counterId: String, amount: Long) {
+        queries.updateCounterValue(id = counterId, amount = amount)
     }
 
     suspend fun deleteAllCounters() {

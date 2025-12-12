@@ -38,24 +38,17 @@ class CounterOverlayViewModel(
         counterRepository.connectToCounterUpdates(counterId = counterId)
 
         viewModelScope.launch {
-            counterRepository.observeCounterUpdates().distinctUntilChanged().collect {result->
-                println(result)
-                when(result){
-                    is LoadResult.Success->{
-                        onEvent(CounterOverlayUiEvent.ShowCounter(result.result))
-                    }
-                    is LoadResult.Error->{
-                        println(result.result)
-                    }
+            counterRepository.observeCounterById(counterId).distinctUntilChanged()
+                .collect { counter ->
+                    onEvent(CounterOverlayUiEvent.ShowCounter(counter))
                 }
-            }
         }
     }
 
     fun onEvent(uiEvent: CounterOverlayUiEvent) {
-        when(uiEvent){
-            is CounterOverlayUiEvent.ShowCounter->{
-                reduceState { oldState->
+        when (uiEvent) {
+            is CounterOverlayUiEvent.ShowCounter -> {
+                reduceState { oldState ->
                     oldState.copy(counter = uiEvent.counter)
                 }
             }

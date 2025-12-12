@@ -7,13 +7,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 
 interface CounterRepository {
-    suspend fun getCounters(): LoadResult<List<Counter>, Throwable>
+    suspend fun fetchCounters(): LoadResult<Unit, Throwable>
+    suspend fun observeCounters(): Flow<List<Counter>>
+    suspend fun observeCounterById(counterId: String): Flow<Counter>
     suspend fun closeSession()
     fun connectToCounterUpdates(counterId: String)
-    fun observeCounterUpdates(): Flow<LoadResult<Counter, Throwable>>
     suspend fun updateCounterValue(counterId: String, delta: Int)
-    suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Counter, Throwable>
-    fun emitNewCounter(newCounter: Counter)
-    fun observeNewCounter(): SharedFlow<Counter>
+    suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Unit, Throwable>
     suspend fun getCountersLocal(): LoadResult<List<Counter>, Throwable>
 }

@@ -8,7 +8,6 @@ import com.bashkevich.counteroverlay.CounterDatabase
 actual class DriverFactory actual constructor(private val platformConfiguration: PlatformConfiguration) {
     actual fun createDriver(): SqlDriver {
         val driver: SqlDriver = AndroidSqliteDriver(CounterDatabase.Schema.synchronous(), platformConfiguration.context, "test.db")
-        //CounterDatabase.Schema.create(driver)
         return driver
     }
 }

@@ -1,5 +1,7 @@
 package com.bashkevich.counteroverlay.di
 
+import app.cash.sqldelight.async.coroutines.awaitCreate
+import app.cash.sqldelight.db.SqlDriver
 import com.bashkevich.counteroverlay.CounterDatabase
 import com.bashkevich.counteroverlay.core.BASE_URL_LOCAL_BACKEND
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
@@ -23,6 +25,13 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -51,7 +60,7 @@ val coreModule = module {
     single {
         httpClient {
             defaultRequest {
-                url{
+                url {
 //                    protocol = URLProtocol.HTTP
 //                    host = BASE_URL_LOCAL_BACKEND
                     protocol = URLProtocol.HTTPS
@@ -59,7 +68,7 @@ val coreModule = module {
                 }
                 contentType(ContentType.Application.Json)
             }
-            install(Logging){
+            install(Logging) {
                 level = LogLevel.ALL
             }
             install(ContentNegotiation) {
@@ -73,8 +82,18 @@ val coreModule = module {
     }
 
     single {
-        val platformConfiguration  = get<PlatformConfiguration>()
-        val driver = DriverFactory(platformConfiguration).createDriver()
+        val platformConfiguration = get<PlatformConfiguration>()
+
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+        val driver = DriverFactory(platformConfiguration).createDriver().also {
+            scope.launch {
+                CounterDatabase.Schema.awaitCreate(it)
+            }.invokeOnCompletion {
+                // После завершения корутины отменяем scope
+                scope.cancel()
+            }
+        }
         CounterDatabase(driver)
     }
 }

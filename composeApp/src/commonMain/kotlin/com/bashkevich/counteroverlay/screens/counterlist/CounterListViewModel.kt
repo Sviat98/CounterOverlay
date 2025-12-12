@@ -27,23 +27,16 @@ class CounterListViewModel(
 
     init {
         viewModelScope.launch {
-            val loadResult = counterRepository.getCounters()
+            val loadResult = counterRepository.fetchCounters()
 
-            println(loadResult)
-
-            if (loadResult is LoadResult.Success) {
-                onEvent(CounterListUiEvent.ShowCounters(counters = loadResult.result))
-            }
+            //handle loadResult = error
         }
 
 
         viewModelScope.launch {
-            counterRepository.observeNewCounter().distinctUntilChanged().collect { newCounter ->
-
-                val counters = state.value.counters.toMutableList()
-
-                counters.add(newCounter)
-                onEvent(CounterListUiEvent.ShowCounters(counters = counters.toList()))
+            counterRepository.observeCounters().distinctUntilChanged().collect { counters ->
+                println(counters)
+                onEvent(CounterListUiEvent.ShowCounters(counters = counters))
             }
         }
     }
