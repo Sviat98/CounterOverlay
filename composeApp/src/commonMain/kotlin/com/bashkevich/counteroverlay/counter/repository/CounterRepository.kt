@@ -4,14 +4,15 @@ import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.counter.Counter
 import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface CounterRepository {
     suspend fun fetchCounters(): LoadResult<Unit, Throwable>
-    suspend fun observeCounters(): Flow<List<Counter>>
-    suspend fun observeCounterById(counterId: String): Flow<Counter>
-    suspend fun closeSession()
-    fun connectToCounterUpdates(counterId: String)
-    suspend fun updateCounterValue(counterId: String, delta: Int)
     suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Unit, Throwable>
-    suspend fun getCountersLocal(): LoadResult<List<Counter>, Throwable>
+    suspend fun updateCounterValue(counterId: String, delta: Int)
+    fun connectToCounterUpdates(counterId: String)
+    fun observeCounterUpdatesFromWebSocket(): Flow<LoadResult<Unit, Throwable>>
+    suspend fun closeSession()
+    suspend fun observeCountersFromDatabase(): Flow<List<Counter>>
+    suspend fun observeCounterByIdFromDatabase(counterId: String): Flow<Counter>
 }

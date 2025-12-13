@@ -13,10 +13,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.navigation.CounterOverlayRoute
-import com.bashkevich.counteroverlay.screens.counteroverlay.CounterOverlayAction
-import com.bashkevich.counteroverlay.screens.counteroverlay.CounterOverlayState
-import com.bashkevich.counteroverlay.screens.counteroverlay.CounterOverlayUiEvent
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CounterOverlayViewModel(
@@ -38,8 +37,20 @@ class CounterOverlayViewModel(
         counterRepository.connectToCounterUpdates(counterId = counterId)
 
         viewModelScope.launch {
-            counterRepository.observeCounterById(counterId).distinctUntilChanged()
+            counterRepository.observeCounterUpdatesFromWebSocket().onEach {
+                println("observeCounterUpdatesFromWebSocket result = $it")
+            }
+                .filter { it is LoadResult.Error }
+                .collect { result ->
+                    // TODO add error handling
+                }
+        }
+
+        viewModelScope.launch {
+            println("observeCounterByIdFromDatabase counterId = $counterId")
+            counterRepository.observeCounterByIdFromDatabase(counterId)
                 .collect { counter ->
+                    println("counter overlay = $counter")
                     onEvent(CounterOverlayUiEvent.ShowCounter(counter))
                 }
         }

@@ -23,8 +23,3 @@ WHERE id = ?;
 
 deleteAllCounters:
 DELETE FROM CounterEntity;
-
-updateCounterValue:
-UPDATE CounterEntity
-SET amount = :amount
-WHERE id = :id;

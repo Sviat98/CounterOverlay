@@ -12,6 +12,7 @@ import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.remote.toEntity
 import com.bashkevich.counteroverlay.counter.toDomain
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -23,21 +24,7 @@ class CounterRepositoryImpl(
         return counterRemoteDataSource.getCounters().doOnSuccess { counterDtos ->
             val entities = counterDtos.map { it.toEntity() }
             counterLocalDataSource.replaceAllCounters(entities)
-        }.mapSuccess {  }
-    }
-
-    override suspend fun observeCounters(): Flow<List<Counter>> {
-        return counterLocalDataSource.getCounters().map { entities ->
-            entities.map { it.toDomain() }
-        }
-    }
-
-    override suspend fun observeCounterById(counterId: String): Flow<Counter> {
-        return counterLocalDataSource.getCounterById(counterId).map { it.toDomain() }
-    }
-
-    override suspend fun getCountersLocal(): LoadResult<List<Counter>, Throwable> {
-        return LoadResult.Success(COUNTERS)
+        }.mapSuccess { }
     }
 
     override suspend fun addCounter(addCounterBody: AddCounterBody): LoadResult<Unit, Throwable> {
@@ -46,22 +33,38 @@ class CounterRepositoryImpl(
         }.mapSuccess { }
     }
 
-    override suspend fun updateCounterValue(counterId: String,delta: Int){
+    override suspend fun updateCounterValue(counterId: String, delta: Int) {
         val counterDeltaDto = CounterDeltaDto(delta)
 
-        counterRemoteDataSource.updateCounterValue(counterId,counterDeltaDto).doOnSuccess {
-            val counter = counterLocalDataSource.getCounterById(counterId).first()
-            val amount = counter.amount + counterDeltaDto.delta.toLong()
-
-            counterLocalDataSource.updateCounterValue(counterId,amount)
-        }
+        counterRemoteDataSource.updateCounterValue(counterId, counterDeltaDto)
     }
+
+    override fun connectToCounterUpdates(counterId: String) {
+        counterRemoteDataSource.connectToCounterUpdates(counterId)
+    }
+
+    override fun observeCounterUpdatesFromWebSocket() =
+        counterRemoteDataSource.observeCounterUpdates()
+            .map { result ->
+                result.doOnSuccess { counterDto ->
+                    counterLocalDataSource.insertCounter(counterDto.toEntity())
+                }.mapSuccess {
+                }
+            }
 
     override suspend fun closeSession() {
         counterRemoteDataSource.closeSession()
     }
 
-    override fun connectToCounterUpdates(counterId: String) {
-        counterRemoteDataSource.connectToCounterUpdates(counterId)
+    override suspend fun observeCountersFromDatabase(): Flow<List<Counter>> {
+        return counterLocalDataSource.getCounters().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun observeCounterByIdFromDatabase(counterId: String): Flow<Counter> {
+        return counterLocalDataSource.getCounterById(counterId).map {
+            it.toDomain()
+        }
     }
 }

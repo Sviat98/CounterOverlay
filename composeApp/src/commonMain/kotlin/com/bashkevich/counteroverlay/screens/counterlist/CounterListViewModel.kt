@@ -33,7 +33,7 @@ class CounterListViewModel(
 
 
         viewModelScope.launch {
-            counterRepository.observeCounters().distinctUntilChanged().collect { counters ->
+            counterRepository.observeCountersFromDatabase().distinctUntilChanged().collect { counters ->
                 println(counters)
                 onEvent(CounterListUiEvent.ShowCounters(counters = counters))
             }
