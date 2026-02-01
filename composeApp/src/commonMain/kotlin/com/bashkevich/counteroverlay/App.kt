@@ -20,7 +20,6 @@ import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsScreen
 import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsViewModel
 import com.bashkevich.counteroverlay.screens.counterlist.CounterListScreen
 import com.bashkevich.counteroverlay.screens.counterlist.CounterListViewModel
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinMultiplatformApplication
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -28,7 +27,6 @@ import org.koin.dsl.KoinConfiguration
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
-@Preview
 fun App(navController: NavHostController = rememberNavController()) {
     KoinMultiplatformApplication(config = KoinConfiguration {
         modules(
