@@ -10,6 +10,8 @@ WORKDIR /app/composeApp
 RUN rm -rf /app/composeApp/build/dist/wasmJs/developmentExecutable/* && \
      rm -rf /usr/share/nginx/html/*
 
+RUN apt-get update && apt-get -y install libatomic1
+
 # Сборка в режиме разработки
 RUN gradle wasmJsBrowserDevelopmentExecutableDistribution
 
