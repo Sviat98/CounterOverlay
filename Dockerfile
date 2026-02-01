@@ -1,5 +1,5 @@
 # Этап сборки (Gradle)
-FROM gradle:9.0.0-jdk21 AS build
+FROM gradle:9.2.1-jdk21 AS build
 
 WORKDIR /app
 COPY . .
