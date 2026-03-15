@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.androidx.room3)
     alias(libs.plugins.androidKmpLibrary)
 }
 
@@ -39,7 +39,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.ktor.client.okhttp)
-            implementation(libs.sqlDelight.android.driver)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -67,7 +67,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.websockets)
 
-            implementation(libs.sqlDelight.coroutines.extensions)
+            implementation(libs.androidx.room3.runtime)
         }
 
         val desktopMain by getting
@@ -76,26 +76,27 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
-            implementation(libs.sqlDelight.sqlite.driver)
+            implementation(libs.androidx.sqlite.bundled)
         }
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.js)
-            implementation(libs.sqlDelight.web.worker.driver.wasm)
-            implementation(npm("@cashapp/sqldelight-sqljs-worker", libs.versions.sqlDelight.get()))
-            implementation(npm("sql.js", libs.versions.sqlJs.get()))
-            implementation(devNpm("copy-webpack-plugin", libs.versions.webPackPlugin.get()))
+            implementation(libs.androidx.sqlite.web)
+            implementation(
+                npm("sqlite-wasm-worker", layout.projectDirectory.dir("worker").asFile)
+            )
         }
     }
 }
 
-sqldelight {
-  databases {
-    create("CounterDatabase") {
-      packageName.set("com.bashkevich.counteroverlay")
-      generateAsync.set(true)
-    }
-  }
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    add("kspAndroid", libs.androidx.room3.compiler)
+    add("kspDesktop", libs.androidx.room3.compiler)
+    add("kspWasmJs", libs.androidx.room3.compiler)
 }
 
 

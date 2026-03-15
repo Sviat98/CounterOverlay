@@ -3,29 +3,28 @@ agp = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-androidx-activityCompose = "1.12.3"
+androidx-activityCompose = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
-androidx-core-ktx = "1.17.0"
+androidx-core-ktx = "1.18.0"
 androidx-espresso-core = "3.7.0"
 androidx-lifecycle = "2.9.6"
 androidx-material = "1.13.0"
-androidx-navigation = "2.9.1"
+androidx-navigation = "2.9.2"
 androidx-test-junit = "1.3.0"
 compose-multiplatform = "1.10.0"
 material-icons-core = "1.7.3"
 junit = "4.13.2"
-kotlin = "2.3.0"
-ksp = "2.3.5"
+kotlin = "2.3.10"
+ksp = "2.3.6"
 kotlinx-serialization = "1.10.0"
 koinBom = "4.1.1"
-ktor = "3.4.0"
+ktor = "3.4.1"
 kotlinx-coroutines = "1.10.2"
 material3-adaptive = "1.2.0"
-sqlDelight = "2.2.1"
-sqlJs = "1.8.0"
-webPackPlugin = "9.1.0"
-composeBom = "2026.01.00"
+room = "3.0.0-alpha01"
+sqlite = "2.7.0-alpha01"
+composeBom = "2026.03.00"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -67,11 +66,11 @@ koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-compose = { group = "io.insert-koin", name = "koin-compose" }
 koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
 
-sqlDelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-sqlDelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
-sqlDelight-web-worker-driver-wasm = { module = "app.cash.sqldelight:web-worker-driver-wasm-js", version.ref = "sqlDelight" }
-sqlDelight-wasm-js = { module = "app.cash.sqldelight:runtime-wasm-js", version.ref = "sqlDelight" }
-sqlDelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+# Room dependencies
+androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -82,4 +81,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+androidx-room3 = { id = "androidx.room3", version.ref = "room" }

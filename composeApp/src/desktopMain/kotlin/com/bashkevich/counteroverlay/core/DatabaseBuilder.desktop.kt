@@ -1,0 +1,15 @@
+package com.bashkevich.counteroverlay.core
+
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
+import java.io.File
+
+actual fun getDatabaseBuilder(
+    platformConfiguration: PlatformConfiguration
+): RoomDatabase.Builder<AppDatabase> {
+    val dbFile = File(System.getProperty("java.io.tmpdir"), "counter_room.db")
+
+    return Room.databaseBuilder<AppDatabase>(
+        name = dbFile.absolutePath
+    )
+}

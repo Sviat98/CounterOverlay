@@ -1,0 +1,18 @@
+package com.bashkevich.counteroverlay.core
+
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
+import androidx.sqlite.driver.web.WebWorkerSQLiteDriver
+import org.w3c.dom.Worker
+
+actual fun getDatabaseBuilder(
+    platformConfiguration: PlatformConfiguration
+): RoomDatabase.Builder<AppDatabase> {
+    return Room.databaseBuilder<AppDatabase>(name = "counter_db")
+        .setDriver(WebWorkerSQLiteDriver(createWorker()))
+}
+
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun createWorker(): Worker =
+    js("""new Worker(new URL("worker/worker.js", import.meta.url))""")
+

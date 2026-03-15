@@ -1,45 +1,32 @@
 package com.bashkevich.counteroverlay.counter.local
 
-import app.cash.sqldelight.async.coroutines.awaitAsOne
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOne
-import app.cash.sqldelight.coroutines.mapToOneOrDefault
-import com.bashkevich.counteroverlay.CounterDatabase
-import com.bashkevich.counteroverlay.CounterEntity
-import com.bashkevich.counteroverlay.core.backgroundDispatcher
+import com.bashkevich.counteroverlay.core.AppDatabase
+import com.bashkevich.counteroverlay.counter.local.room.CounterDao
+import com.bashkevich.counteroverlay.counter.local.room.CounterEntity as RoomCounterEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 class CounterLocalDataSource(
-    private val db: CounterDatabase
+    private val db: AppDatabase
 ) {
-    private val queries = db.counterQueries
+    private val dao: CounterDao = db.counterDao()
 
-    private val DEFAULT_COUNTER_ENTITY = CounterEntity("0","Default",-1L)
+    private val DEFAULT_COUNTER = RoomCounterEntity("0", "Default", -1)
 
-    fun getCounters(): Flow<List<CounterEntity>> {
-        return queries.getAllCounters()
-            .asFlow()
-            .mapToList(backgroundDispatcher)
+    fun getCounters(): Flow<List<RoomCounterEntity>> {
+        return dao.getAllCounters()
     }
 
-    fun getCounterById(id: String): Flow<CounterEntity> {
-        return queries.getCounterById(id)
-            .asFlow()
-            .mapToOneOrDefault(defaultValue = DEFAULT_COUNTER_ENTITY, context = backgroundDispatcher)
+    fun getCounterById(id: String): Flow<RoomCounterEntity> {
+        return dao.getCounterById(id).map { it ?: DEFAULT_COUNTER }
     }
 
-    suspend fun insertCounter(counter: CounterEntity) {
-        queries.insertCounter(counter.id, counter.name, counter.amount)
+    suspend fun insertCounter(counter: RoomCounterEntity) {
+        dao.insertCounter(counter)
     }
-    
-    suspend fun replaceAllCounters(counters: List<CounterEntity>) {
-        queries.transaction {
-            queries.deleteAllCounters()
-            counters.forEach {
-                queries.insertCounter(it.id, it.name, it.amount)
-            }
-        }
+
+    suspend fun replaceAllCounters(counters: List<RoomCounterEntity>) {
+        dao.deleteAllCounters()
+        dao.insertCounters(counters)
     }
 }
