@@ -2,6 +2,7 @@ package com.bashkevich.counteroverlay.core
 
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 
 actual fun getDatabaseBuilder(
     platformConfiguration: PlatformConfiguration
@@ -13,5 +14,5 @@ actual fun getDatabaseBuilder(
     return Room.databaseBuilder<AppDatabase>(
         context = appContext,
         name = dbFile.absolutePath
-    )
+    ).setDriver(BundledSQLiteDriver())
 }

@@ -14,5 +14,5 @@ actual fun getDatabaseBuilder(
 
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun createWorker(): Worker =
-    js("""new Worker(new URL("worker/worker.js", import.meta.url))""")
+    js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
 
