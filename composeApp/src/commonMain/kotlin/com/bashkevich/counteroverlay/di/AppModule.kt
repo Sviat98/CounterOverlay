@@ -28,6 +28,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import kotlin.time.Clock
 
 val counterModule = module {
     viewModelOf(::CounterListViewModel)
@@ -72,11 +73,13 @@ val coreModule = module {
     }
 
     single {
+        val timestamp = Clock.System.now()
+        println("🟡 Koin: Creating database singleton at $timestamp")
         val platformConfiguration = get<PlatformConfiguration>()
         val builder = getDatabaseBuilder(platformConfiguration)
 
         builder
-            .setQueryCoroutineContext(backgroundDispatcher)
+            //.setQueryCoroutineContext(backgroundDispatcher)
             .build()
     }
 }

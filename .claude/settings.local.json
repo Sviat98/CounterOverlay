@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(curl:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(./gradlew:*)"
     ]
   }
 }

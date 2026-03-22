@@ -24,13 +24,9 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                configDirectory = file("src/webpack.config.d")
-            }
-        }
+        browser()
         binaries.executable()
+        useEsModules()
     }
     
     sourceSets {
@@ -83,8 +79,9 @@ kotlin {
             implementation(libs.ktor.client.js)
             implementation(libs.androidx.sqlite.web)
             implementation(
-                npm("sqlite-wasm-worker", layout.projectDirectory.dir("worker").asFile)
+                npm("sqlite-wasm-worker", layout.projectDirectory.dir("sqlite-wasm-worker").asFile)
             )
+            implementation(libs.kotlinx.browser)
         }
     }
 }

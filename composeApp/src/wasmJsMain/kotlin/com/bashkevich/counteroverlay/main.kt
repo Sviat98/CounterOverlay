@@ -15,8 +15,8 @@ fun main() {
         val navController: NavHostController = rememberNavController()
         App(navController = navController)
 
-        LaunchedEffect(Unit) {
-            navController.bindToBrowserNavigation()
-        }
+//        LaunchedEffect(Unit) {
+//            navController.bindToBrowserNavigation()
+//        }
     }
 }

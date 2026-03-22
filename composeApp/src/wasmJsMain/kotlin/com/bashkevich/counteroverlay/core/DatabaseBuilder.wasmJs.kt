@@ -8,11 +8,11 @@ import org.w3c.dom.Worker
 actual fun getDatabaseBuilder(
     platformConfiguration: PlatformConfiguration
 ): RoomDatabase.Builder<AppDatabase> {
+    println("🔴 getDatabaseBuilder called - creating NEW Worker!")
     return Room.databaseBuilder<AppDatabase>(name = "counter_db")
         .setDriver(WebWorkerSQLiteDriver(createWorker()))
 }
 
 @OptIn(ExperimentalWasmJsInterop::class)
-private fun createWorker(): Worker =
-    js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
+private fun createWorker(): Worker =  js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
 
