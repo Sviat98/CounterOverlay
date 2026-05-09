@@ -1,12 +1,11 @@
 package com.bashkevich.counteroverlay.di
 
-import app.cash.sqldelight.async.coroutines.awaitCreate
-import com.bashkevich.counteroverlay.CounterDatabase
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
-import com.bashkevich.counteroverlay.core.DriverFactory
 import com.bashkevich.counteroverlay.core.PlatformConfiguration
+import com.bashkevich.counteroverlay.core.backgroundDispatcher
 import com.bashkevich.counteroverlay.core.httpClient
 import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
+import com.bashkevich.counteroverlay.core.getDatabaseBuilder
 import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import com.bashkevich.counteroverlay.counter.repository.CounterRepositoryImpl
@@ -23,17 +22,13 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import kotlin.time.Clock
 
 val counterModule = module {
     viewModelOf(::CounterListViewModel)
@@ -78,19 +73,14 @@ val coreModule = module {
     }
 
     single {
+        val timestamp = Clock.System.now()
+        println("🟡 Koin: Creating database singleton at $timestamp")
         val platformConfiguration = get<PlatformConfiguration>()
+        val builder = getDatabaseBuilder(platformConfiguration)
 
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
-        val driver = DriverFactory(platformConfiguration).createDriver().also {
-            scope.launch {
-                CounterDatabase.Schema.awaitCreate(it)
-            }.invokeOnCompletion {
-                // После завершения корутины отменяем scope
-                scope.cancel()
-            }
-        }
-        CounterDatabase(driver)
+        builder
+            //.setQueryCoroutineContext(backgroundDispatcher)
+            .build()
     }
 }
 
