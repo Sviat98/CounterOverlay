@@ -3,7 +3,6 @@ package com.bashkevich.counteroverlay.counter.repository
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.doOnSuccess
 import com.bashkevich.counteroverlay.core.mapSuccess
-import com.bashkevich.counteroverlay.counter.COUNTERS
 import com.bashkevich.counteroverlay.counter.Counter
 import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
 import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
@@ -12,8 +11,6 @@ import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.remote.toEntity
 import com.bashkevich.counteroverlay.counter.toDomain
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class CounterRepositoryImpl(
@@ -39,21 +36,10 @@ class CounterRepositoryImpl(
         counterRemoteDataSource.updateCounterValue(counterId, counterDeltaDto)
     }
 
-    override fun connectToCounterUpdates(counterId: String) {
-        counterRemoteDataSource.connectToCounterUpdates(counterId)
-    }
-
-    override fun observeCounterUpdatesFromWebSocket() =
-        counterRemoteDataSource.observeCounterUpdates()
-            .map { result ->
-                result.doOnSuccess { counterDto ->
-                    counterLocalDataSource.insertCounter(counterDto.toEntity())
-                }.mapSuccess {
-                }
-            }
-
-    override suspend fun closeSession() {
-        counterRemoteDataSource.closeSession()
+    override suspend fun fetchCounterById(counterId: String): LoadResult<Unit, Throwable> {
+        return counterRemoteDataSource.getCounterById(counterId).doOnSuccess { counterDto ->
+            counterLocalDataSource.insertCounter(counterDto.toEntity())
+        }.mapSuccess { }
     }
 
     override suspend fun observeCountersFromDatabase(): Flow<List<Counter>> {

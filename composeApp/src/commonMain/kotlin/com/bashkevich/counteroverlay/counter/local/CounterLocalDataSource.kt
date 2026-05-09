@@ -5,11 +5,14 @@ import com.bashkevich.counteroverlay.counter.local.room.CounterDao
 import com.bashkevich.counteroverlay.counter.local.room.CounterEntity as RoomCounterEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class CounterLocalDataSource(
     private val db: AppDatabase
 ) {
     private val dao: CounterDao = db.counterDao()
+    private val databaseMutex = Mutex()
 
     private val DEFAULT_COUNTER = RoomCounterEntity("0", "Default", -1)
 
@@ -22,11 +25,10 @@ class CounterLocalDataSource(
     }
 
     suspend fun insertCounter(counter: RoomCounterEntity) {
-        dao.insertCounter(counter)
+            dao.insertCounter(counter)
     }
 
     suspend fun replaceAllCounters(counters: List<RoomCounterEntity>) {
-        dao.deleteAllCounters()
-        dao.insertCounters(counters)
+            dao.replaceAllCounters(counters)
     }
 }

@@ -3,7 +3,6 @@ package com.bashkevich.counteroverlay.screens.counteroverlay
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import com.bashkevich.counteroverlay.mvi.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,6 @@ import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.navigation.CounterOverlayRoute
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CounterOverlayViewModel(
@@ -34,16 +31,8 @@ class CounterOverlayViewModel(
     init {
         val counterId = savedStateHandle.toRoute<CounterOverlayRoute>().counterId
 
-        counterRepository.connectToCounterUpdates(counterId = counterId)
-
         viewModelScope.launch {
-            counterRepository.observeCounterUpdatesFromWebSocket().onEach {
-                println("observeCounterUpdatesFromWebSocket result = $it")
-            }
-                .filter { it is LoadResult.Error }
-                .collect { result ->
-                    // TODO add error handling
-                }
+            counterRepository.fetchCounterById(counterId)
         }
 
         viewModelScope.launch {
