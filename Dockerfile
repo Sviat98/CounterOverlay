@@ -22,5 +22,7 @@ FROM nginx:alpine
 COPY --from=build /app/composeApp/build/dist/wasmJs/developmentExecutable /usr/share/nginx/html
 
 # Порт 80 и запуск Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
