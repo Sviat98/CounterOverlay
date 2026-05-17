@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bashkevich.counteroverlay.components.CounterCard
+import com.bashkevich.counteroverlay.components.LocalCounterTheme
 import com.bashkevich.counteroverlay.components.hoverScaleEffect
 import com.bashkevich.counteroverlay.counter.Counter
+import com.bashkevich.counteroverlay.theme.CounterTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,11 +75,14 @@ fun CounterListContent(
             ) {
                 items(state.counters,
                     key = { it.id }) { counter ->
-                    CounterCard(
-                        modifier = Modifier.hoverScaleEffect(),
-                        counter = counter,
-                        onClick = { onItemClick(counter) }
-                    )
+                    val theme = state.themes[counter.themeId] ?: CounterTheme.DEFAULT
+                    CompositionLocalProvider(LocalCounterTheme provides theme) {
+                        CounterCard(
+                            modifier = Modifier.hoverScaleEffect(),
+                            counter = counter,
+                            onClick = { onItemClick(counter) }
+                        )
+                    }
                 }
             }
         }

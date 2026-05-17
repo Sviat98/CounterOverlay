@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bashkevich.counteroverlay.components.CounterView
+import com.bashkevich.counteroverlay.components.LocalCounterTheme
 import com.bashkevich.counteroverlay.components.setText
 import com.bashkevich.counteroverlay.core.BASE_URL_FRONTEND
 import kotlinx.coroutines.launch
@@ -61,7 +63,10 @@ fun CounterDetailsContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val counter = state.counter
-        CounterView(counter = counter)
+        val theme = state.theme
+        CompositionLocalProvider(LocalCounterTheme provides theme) {
+            CounterView(counter = counter)
+        }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp)

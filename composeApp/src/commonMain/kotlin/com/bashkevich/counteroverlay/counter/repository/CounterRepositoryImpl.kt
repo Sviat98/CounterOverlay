@@ -3,7 +3,6 @@ package com.bashkevich.counteroverlay.counter.repository
 import com.bashkevich.counteroverlay.core.LoadResult
 import com.bashkevich.counteroverlay.core.doOnSuccess
 import com.bashkevich.counteroverlay.core.mapSuccess
-import com.bashkevich.counteroverlay.counter.COUNTERS
 import com.bashkevich.counteroverlay.counter.Counter
 import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
 import com.bashkevich.counteroverlay.counter.remote.AddCounterBody
@@ -12,8 +11,6 @@ import com.bashkevich.counteroverlay.counter.remote.CounterRemoteDataSource
 import com.bashkevich.counteroverlay.counter.remote.toEntity
 import com.bashkevich.counteroverlay.counter.toDomain
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class CounterRepositoryImpl(
@@ -56,13 +53,13 @@ class CounterRepositoryImpl(
         counterRemoteDataSource.closeSession()
     }
 
-    override suspend fun observeCountersFromDatabase(): Flow<List<Counter>> {
+    override fun observeCountersFromDatabase(): Flow<List<Counter>> {
         return counterLocalDataSource.getCounters().map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
-    override suspend fun observeCounterByIdFromDatabase(counterId: String): Flow<Counter> {
+    override fun observeCounterByIdFromDatabase(counterId: String): Flow<Counter> {
         return counterLocalDataSource.getCounterById(counterId).map {
             it.toDomain()
         }

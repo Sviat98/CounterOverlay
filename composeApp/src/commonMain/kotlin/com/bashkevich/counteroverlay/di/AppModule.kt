@@ -2,7 +2,6 @@ package com.bashkevich.counteroverlay.di
 
 import com.bashkevich.counteroverlay.core.BASE_URL_REMOTE_BACKEND
 import com.bashkevich.counteroverlay.core.PlatformConfiguration
-import com.bashkevich.counteroverlay.core.backgroundDispatcher
 import com.bashkevich.counteroverlay.core.httpClient
 import com.bashkevich.counteroverlay.counter.local.CounterLocalDataSource
 import com.bashkevich.counteroverlay.core.getDatabaseBuilder
@@ -12,6 +11,10 @@ import com.bashkevich.counteroverlay.counter.repository.CounterRepositoryImpl
 import com.bashkevich.counteroverlay.screens.addcounterdialog.AddCounterDialogViewModel
 import com.bashkevich.counteroverlay.screens.counterdetails.CounterDetailsViewModel
 import com.bashkevich.counteroverlay.screens.counterlist.CounterListViewModel
+import com.bashkevich.counteroverlay.theme.local.ThemeLocalDataSource
+import com.bashkevich.counteroverlay.theme.remote.ThemeRemoteDataSource
+import com.bashkevich.counteroverlay.theme.repository.ThemeRepository
+import com.bashkevich.counteroverlay.theme.repository.ThemeRepositoryImpl
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -40,6 +43,12 @@ val counterModule = module {
     }
     singleOf(::CounterRemoteDataSource)
     singleOf(::CounterLocalDataSource)
+
+    singleOf(::ThemeRepositoryImpl) {
+        bind<ThemeRepository>()
+    }
+    singleOf(::ThemeRemoteDataSource)
+    singleOf(::ThemeLocalDataSource)
 }
 
 val coreModule = module {
