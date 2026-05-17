@@ -42,6 +42,10 @@ class CounterDetailsViewModel(
         counterRepository.connectToCounterUpdates(counterId = counterId)
 
         viewModelScope.launch {
+            counterRepository.observeCounterUpdatesFromWebSocket().collect { }
+        }
+
+        viewModelScope.launch {
             counterRepository.observeCounterByIdFromDatabase(counterId)
                 .distinctUntilChanged()
                 .onEach { counter ->

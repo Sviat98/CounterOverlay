@@ -49,6 +49,10 @@ class CounterRepositoryImpl(
                 }
             }
 
+    override fun observeCounterUpdatesDirectly() =
+        counterRemoteDataSource.observeCounterUpdates()
+            .map { result -> result.mapSuccess { it.toDomain() } }
+
     override suspend fun closeSession() {
         counterRemoteDataSource.closeSession()
     }

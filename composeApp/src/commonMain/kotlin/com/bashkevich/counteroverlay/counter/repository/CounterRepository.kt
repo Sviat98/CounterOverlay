@@ -11,6 +11,7 @@ interface CounterRepository {
     suspend fun updateCounterValue(counterId: String, delta: Int)
     fun connectToCounterUpdates(counterId: String)
     fun observeCounterUpdatesFromWebSocket(): Flow<LoadResult<Unit, Throwable>>
+    fun observeCounterUpdatesDirectly(): Flow<LoadResult<Counter, Throwable>>
     suspend fun closeSession()
     fun observeCountersFromDatabase(): Flow<List<Counter>>
     fun observeCounterByIdFromDatabase(counterId: String): Flow<Counter>

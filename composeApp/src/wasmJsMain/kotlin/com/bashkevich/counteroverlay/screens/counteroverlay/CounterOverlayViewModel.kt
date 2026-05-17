@@ -3,7 +3,7 @@ package com.bashkevich.counteroverlay.screens.counteroverlay
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.bashkevich.counteroverlay.core.LoadResult
+import com.bashkevich.counteroverlay.core.doOnSuccess
 import com.bashkevich.counteroverlay.counter.repository.CounterRepository
 import com.bashkevich.counteroverlay.mvi.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.Flow
 
 import com.bashkevich.counteroverlay.navigation.CounterOverlayRoute
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CounterOverlayViewModel(
@@ -37,21 +34,12 @@ class CounterOverlayViewModel(
         counterRepository.connectToCounterUpdates(counterId = counterId)
 
         viewModelScope.launch {
-            counterRepository.observeCounterUpdatesFromWebSocket().onEach {
-                println("observeCounterUpdatesFromWebSocket result = $it")
-            }
-                .filter { it is LoadResult.Error }
+            counterRepository.observeCounterUpdatesDirectly()
                 .collect { result ->
-                    // TODO add error handling
-                }
-        }
-
-        viewModelScope.launch {
-            println("observeCounterByIdFromDatabase counterId = $counterId")
-            counterRepository.observeCounterByIdFromDatabase(counterId)
-                .collect { counter ->
-                    println("counter overlay = $counter")
-                    onEvent(CounterOverlayUiEvent.ShowCounter(counter))
+                    result.doOnSuccess { counter ->
+                        onEvent(CounterOverlayUiEvent.ShowCounter(counter))
+                    }
+                    // TODO add error handling for LoadResult.Error
                 }
         }
     }
