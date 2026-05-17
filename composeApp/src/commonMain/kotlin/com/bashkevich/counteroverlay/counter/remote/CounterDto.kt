@@ -19,7 +19,9 @@ data class CounterDto(
 @Serializable
 data class AddCounterBody(
     @SerialName(value = "name")
-    val name: String
+    val name: String,
+    @SerialName(value = "theme_id")
+    val themeId: String,
 )
 
 
