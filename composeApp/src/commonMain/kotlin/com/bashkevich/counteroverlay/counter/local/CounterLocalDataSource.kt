@@ -11,7 +11,7 @@ class CounterLocalDataSource(
 ) {
     private val dao: CounterDao = db.counterDao()
 
-    private val DEFAULT_COUNTER = RoomCounterEntity("0", "Default", -1)
+    private val DEFAULT_COUNTER = RoomCounterEntity("0", "Default", -1, "")
 
     fun getCounters(): Flow<List<RoomCounterEntity>> {
         return dao.getAllCounters()

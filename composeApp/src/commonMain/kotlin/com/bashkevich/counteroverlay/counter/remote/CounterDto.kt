@@ -1,6 +1,6 @@
 package com.bashkevich.counteroverlay.counter.remote
 
-import com.bashkevich.counteroverlay.counter.local.room.CounterEntity as RoomCounterEntity
+import com.bashkevich.counteroverlay.counter.local.room.CounterEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,12 +12,16 @@ data class CounterDto(
     val name: String,
     @SerialName(value = "value")
     val value: Int,
+    @SerialName(value = "theme_id")
+    val themeId: String,
 )
 
 @Serializable
 data class AddCounterBody(
     @SerialName(value = "name")
-    val name: String
+    val name: String,
+    @SerialName(value = "theme_id")
+    val themeId: String,
 )
 
 
@@ -27,8 +31,9 @@ data class CounterDeltaDto(
     val delta: Int,
 )
 
-fun CounterDto.toEntity() = RoomCounterEntity(
+fun CounterDto.toEntity() = CounterEntity(
     id = id,
     name = name,
-    amount = value
+    amount = value,
+    themeId = themeId
 )
