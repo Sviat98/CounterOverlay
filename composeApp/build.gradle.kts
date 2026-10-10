@@ -15,7 +15,7 @@ kotlin {
 
     androidLibrary{
         minSdk = libs.versions.android.minSdk.get().toInt()
-        compileSdk = libs.versions.android.targetSdk.get().toInt()
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         namespace = "com.bashkevich.counteroverlay.composeApp"
         experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }

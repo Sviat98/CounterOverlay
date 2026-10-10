@@ -6,7 +6,7 @@ plugins {
 android {
     namespace = "com.bashkevich.counteroverlay"
     compileSdk {
-        version = release(36)
+        version = release(libs.versions.android.compileSdk.get().toInt())
     }
 
     defaultConfig {
